@@ -68,16 +68,20 @@ function updateColorMap(applyZoom = false) {
     for (let i = 1; i < lines.length; i++) {
         const rowData = lines[i].split(',');
         const row = document.createElement('tr');
+        let rowInRange = false;
         rowData.forEach(cell => {
             const td = document.createElement('td');
             td.textContent = cell;
             const numericValue = parseFloat(cell);
             if (!isNaN(numericValue) && numericValue >= zoomMinValue && numericValue <= zoomMaxValue) {
-                td.style.backgroundColor = getColorForValue(numericValue, zoomMinValue, zoomMaxValue);
+                td.style.backgroundColor = getColorForValue(numericValue, minValue, maxValue);
+                rowInRange = true;
             }
             row.appendChild(td);
         });
-        table.appendChild(row);
+        if (rowInRange || !applyZoom) {
+            table.appendChild(row);
+        }
     }
 
     colorMap.appendChild(table);
