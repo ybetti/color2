@@ -18,8 +18,8 @@ document.getElementById('updateButton').addEventListener('click', function() {
     updateColorMap();
 });
 
-document.getElementById('saveButton').addEventListener('click', function() {
-    saveColorMapAsImage();
+document.getElementById('applyZoomButton').addEventListener('click', function() {
+    updateColorMap(true);
 });
 
 function calculateMinMax() {
@@ -41,11 +41,13 @@ function calculateMinMax() {
     document.getElementById('maxValue').value = autoMaxValue;
 }
 
-function updateColorMap() {
+function updateColorMap(applyZoom = false) {
     if (!globalData) return;
 
     const minValue = parseFloat(document.getElementById('minValue').value);
     const maxValue = parseFloat(document.getElementById('maxValue').value);
+    const zoomMinValue = applyZoom ? parseFloat(document.getElementById('zoomMinValue').value) : minValue;
+    const zoomMaxValue = applyZoom ? parseFloat(document.getElementById('zoomMaxValue').value) : maxValue;
 
     const lines = globalData.split('\n');
     const headers = lines[0].split(',');
@@ -70,8 +72,8 @@ function updateColorMap() {
             const td = document.createElement('td');
             td.textContent = cell;
             const numericValue = parseFloat(cell);
-            if (!isNaN(numericValue)) {
-                td.style.backgroundColor = getColorForValue(numericValue, minValue, maxValue);
+            if (!isNaN(numericValue) && numericValue >= zoomMinValue && numericValue <= zoomMaxValue) {
+                td.style.backgroundColor = getColorForValue(numericValue, zoomMinValue, zoomMaxValue);
             }
             row.appendChild(td);
         });
